@@ -203,3 +203,17 @@ button {
 .current {
     color: #00d4ff;
 }
+
+.kickBtn {
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 2px 8px;
+    font-size: 14px;
+}
+
+.kickBtn:hover {
+    background: #ff1a1a;
+}

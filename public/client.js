@@ -51,6 +51,13 @@ joinBtn.onclick = () => {
     hiddenInput.focus();
 };
 
+socket.on("kicked", () => {
+
+    alert("Has sido expulsado del juego.");
+
+    window.location.reload();
+});
+
 socket.on("master", () => {
 
     isMaster = true;
@@ -239,7 +246,18 @@ socket.on("updatePlayers", (players) => {
         div.innerHTML = `
             <div class="playerInfo">
                 <span>${player.name}</span>
-                <span>${Math.round(player.progress)}%</span>
+         
+                <div style="display:flex; gap:10px; align-items:center;">
+
+                    <span>${Math.round(player.progress)}%</span>
+
+                    ${
+                        isMaster
+                            ? `<button class="kickBtn" onclick="kickPlayer('${id}')">❌</button>`
+                            : ""
+                    }
+
+                </div>    
             </div>
 
             <div class="bar">
@@ -303,3 +321,11 @@ socket.on("resetRace", () => {
 
     winnerDiv.innerText = "";
 });
+
+function kickPlayer(playerId) {
+
+    if (confirm("¿Expulsar jugador?")) {
+
+        socket.emit("kickPlayer", playerId);
+    }
+}

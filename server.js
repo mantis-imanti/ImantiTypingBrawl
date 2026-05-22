@@ -176,6 +176,19 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("kickPlayer", (playerId) => {
+
+        if (!players[socket.id]?.isMaster) return;
+
+        if (players[playerId]) {
+
+            io.to(playerId).emit("kicked");
+
+            delete players[playerId];
+
+            io.emit("updatePlayers", players);
+        }
+    });
     socket.on("disconnect", () => {
 
         delete players[socket.id];
@@ -184,8 +197,8 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
-    console.log("Servidor corriendo en puerto " + PORT);
+server.listen(3000, () => {
+
+    console.log("Servidor corriendo en http://localhost:3000");
 });
