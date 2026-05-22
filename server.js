@@ -10,8 +10,6 @@ app.use(express.static("public"));
 
 const players = {};
 
-const MASTER_PASSWORD = "admin123";
-
 let currentText = "";
 let raceStarted = false;
 let winner = null;
@@ -86,7 +84,7 @@ io.on("connection", (socket) => {
 
     socket.on("join", (data) => {
 
-        if (data.password === MASTER_PASSWORD) {
+        if (data.password === "socket.id") {
 
             players[socket.id].isMaster = true;
 
