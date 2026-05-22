@@ -93,7 +93,7 @@ socket.on("text", (text) => {
 
     started = false;
 
-    wpmText.innerText = "0 WPM";
+    wpmText.innerText = "0 PPM";
     accuracyText.innerText = "100%";
     errorsText.innerText = "0 errores";
 
@@ -103,7 +103,7 @@ socket.on("text", (text) => {
 
 socket.on("countdown", (count) => {
 
-    countdown.innerText = count > 0 ? count : "GO!";
+    countdown.innerText = count > 0 ? count : "¡AHORA!";
 });
 
 socket.on("startRace", () => {
@@ -189,7 +189,7 @@ hiddenInput.addEventListener("input", () => {
 
     const wpm = Math.round((correctChars / 5) / minutes) || 0;
 
-    wpmText.innerText = wpm + " WPM";
+    wpmText.innerText = wpm + " PPM";
 
     accuracyText.innerText = accuracy + "%";
 
@@ -273,7 +273,7 @@ socket.on("raceFinished", ({ winner, ranking }) => {
 
     started = false;
 
-    winnerDiv.innerText = "🏆 Ganador: " + winner;
+    winnerDiv.innerText = "🏆 #1 - " + winner;
 
     playersDiv.innerHTML = "";
 
@@ -286,7 +286,7 @@ socket.on("raceFinished", ({ winner, ranking }) => {
         div.innerHTML = `
             <div class="playerInfo">
                 <span>#${player.position} ${player.name} ${"⭐".repeat(player.stars)}</span>
-                <span>${player.wpm} WPM | ${player.errors} errores</span>
+                <span>${player.wpm} PPM | ${player.errors} errores</span>
             </div>
 
             <div class="bar">
@@ -313,7 +313,7 @@ socket.on("resetRace", () => {
     caret.style.left = "0px";
     caret.style.top = "0px";
 
-    wpmText.innerText = "0 WPM";
+    wpmText.innerText = "0 PPM";
 
     accuracyText.innerText = "100%";
 
