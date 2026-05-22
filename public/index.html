@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMANTI Typing Brawl</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="popup">
+
+        <div id="popupContent">
+
+            <h1>IMANTI Typing Brawl</h1>
+
+            <input type="text" id="nameInput" placeholder="Nombre jugador">
+
+            <input type="password" id="passwordInput">
+
+            <button id="joinBtn">Entrar</button>
+
+        </div>
+
+    </div>
+
+    <div id="game">
+
+        <div id="masterPanel" style="display:none;">
+
+            <textarea id="customText" placeholder="Escribe el texto de la carrera"></textarea>
+
+            <button id="startBtn">
+                INICIAR PARTIDA
+            </button>
+
+        </div>
+
+        <div id="topBar">
+
+            <div id="countdown">
+                Esperando inicio...
+            </div>
+
+            <div id="stats">
+
+                <span id="wpm">0 WPM</span>
+                <span id="accuracy">100%</span>
+                <span id="errors">0 errores</span>
+
+            </div>
+
+        </div>
+
+        <div id="textContainer">
+
+            <div id="caret"></div>
+
+            <div id="text"></div>
+
+        </div>
+
+        <input type="text" id="hiddenInput" autocomplete="off">
+
+        <div id="winner"></div>
+
+        <div id="players"></div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+
+</body>
+</html>

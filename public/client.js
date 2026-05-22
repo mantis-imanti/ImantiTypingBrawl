@@ -1,0 +1,305 @@
+const socket = io();
+
+const textDiv = document.getElementById("text");
+const hiddenInput = document.getElementById("hiddenInput");
+
+const caret = document.getElementById("caret");
+
+const countdown = document.getElementById("countdown");
+
+const wpmText = document.getElementById("wpm");
+const accuracyText = document.getElementById("accuracy");
+const errorsText = document.getElementById("errors");
+
+const playersDiv = document.getElementById("players");
+
+const winnerDiv = document.getElementById("winner");
+
+const popup = document.getElementById("popup");
+
+const joinBtn = document.getElementById("joinBtn");
+
+const nameInput = document.getElementById("nameInput");
+
+const passwordInput = document.getElementById("passwordInput");
+
+const startBtn = document.getElementById("startBtn");
+
+const masterPanel = document.getElementById("masterPanel");
+
+const customText = document.getElementById("customText");
+
+let raceText = "";
+
+let totalTyped = 0;
+let started = false;
+let startTime = 0;
+let isMaster = false;
+let totalErrorsMade = 0;
+let lastInput = "";
+
+
+joinBtn.onclick = () => {
+
+    socket.emit("join", {
+        name: nameInput.value,
+        password: passwordInput.value
+    });
+
+    popup.style.display = "none";
+
+    hiddenInput.focus();
+};
+
+socket.on("master", () => {
+
+    isMaster = true;
+
+    masterPanel.style.display = "block";
+
+    hiddenInput.style.display = "none";
+});
+
+customText.addEventListener("input", () => {
+
+    socket.emit("setText", customText.value);
+});
+
+startBtn.onclick = () => {
+
+    socket.emit("startGame");
+};
+
+socket.on("text", (text) => {
+
+    raceText = text;
+
+    renderText();
+
+    hiddenInput.value = "";
+
+    winnerDiv.innerText = "";
+
+    totalTyped = 0;
+    totalErrorsMade = 0;
+    lastInput = "";
+
+    started = false;
+
+    wpmText.innerText = "0 WPM";
+    accuracyText.innerText = "100%";
+    errorsText.innerText = "0 errores";
+
+    caret.style.left = "0px";
+    caret.style.top = "0px";
+});
+
+socket.on("countdown", (count) => {
+
+    countdown.innerText = count > 0 ? count : "GO!";
+});
+
+socket.on("startRace", () => {
+
+    if (isMaster) return;
+
+    started = true;
+
+    startTime = Date.now();
+
+    hiddenInput.focus();
+});
+
+hiddenInput.addEventListener("input", () => {
+
+    if (!started) return;
+
+    const value = hiddenInput.value;
+    if (value.length > lastInput.length) {
+
+        const index = value.length - 1;
+
+        if (raceText[index] && value[index] !== raceText[index]) {
+            totalErrorsMade++;
+        }
+    }
+
+    lastInput = value;
+    totalTyped++;
+
+    let html = "";
+
+    let correctChars = 0;
+
+    for (let i = 0; i < raceText.length; i++) {
+
+        const char = raceText[i];
+
+        if (i < value.length) {
+
+            if (value[i] === char) {
+
+                html += `<span class="correct">${char}</span>`;
+
+                correctChars++;
+
+            } else {
+
+                html += `<span class="incorrect">${char}</span>`;
+            }
+
+        } else if (i === value.length) {
+
+            html += `<span class="current">${char}</span>`;
+        } else {
+
+            html += char;
+        }
+    }
+
+    textDiv.innerHTML = html;
+
+    const spans = document.querySelectorAll("#text span");
+
+    if (spans[value.length]) {
+
+        const rect = spans[value.length].getBoundingClientRect();
+
+        const container = textDiv.getBoundingClientRect();
+
+        caret.style.left = rect.left - container.left + "px";
+        caret.style.top = rect.top - container.top + "px";
+    }
+
+    const errors = totalErrorsMade;
+
+    const accuracy = Math.max(
+        0,
+        Math.round((correctChars / totalTyped) * 100)
+    );
+
+    const minutes = (Date.now() - startTime) / 1000 / 60;
+
+    const wpm = Math.round((correctChars / 5) / minutes) || 0;
+
+    wpmText.innerText = wpm + " WPM";
+
+    accuracyText.innerText = accuracy + "%";
+
+    errorsText.innerText = errors + " errores";
+
+    const progress = raceText.length > 0
+        ? Math.min((value.length / raceText.length) * 100, 100)
+        : 0;
+
+    socket.emit("typing", {
+        progress,
+        wpm,
+        errors
+    });
+
+    if (correctChars === raceText.length) {
+
+        started = false;
+    }
+});
+
+function renderText() {
+
+    let html = "";
+
+    for (let i = 0; i < raceText.length; i++) {
+
+        if (i === 0) {
+
+            html += `<span class="current">${raceText[i]}</span>`;
+        } else {
+
+            html += raceText[i];
+        }
+    }
+
+    textDiv.innerHTML = html;
+}
+
+socket.on("updatePlayers", (players) => {
+
+    playersDiv.innerHTML = "";
+
+    for (let id in players) {
+
+        const player = players[id];
+
+        if (player.isMaster) continue;
+
+        const div = document.createElement("div");
+
+        div.classList.add("player");
+
+        div.innerHTML = `
+            <div class="playerInfo">
+                <span>${player.name}</span>
+                <span>${Math.round(player.progress)}%</span>
+            </div>
+
+            <div class="bar">
+                <div class="fill" style="width:${player.progress}%"></div>
+            </div>
+        `;
+
+        playersDiv.appendChild(div);
+    }
+});
+
+socket.on("raceFinished", ({ winner, ranking }) => {
+
+    started = false;
+
+    winnerDiv.innerText = "🏆 Ganador: " + winner;
+
+    playersDiv.innerHTML = "";
+
+    ranking.forEach(player => {
+
+        const div = document.createElement("div");
+
+        div.classList.add("player");
+
+        div.innerHTML = `
+            <div class="playerInfo">
+                <span>#${player.position} ${player.name} ${"⭐".repeat(player.stars)}</span>
+                <span>${player.wpm} WPM | ${player.errors} errores</span>
+            </div>
+
+            <div class="bar">
+                <div class="fill" style="width:${player.progress}%"></div>
+            </div>
+        `;
+
+        playersDiv.appendChild(div);
+    });
+});
+
+socket.on("resetRace", () => {
+
+    hiddenInput.value = "";
+
+    totalTyped = 0;
+    totalErrorsMade = 0;
+    lastInput = "";
+    
+    started = false;
+
+    renderText();
+
+    caret.style.left = "0px";
+    caret.style.top = "0px";
+
+    wpmText.innerText = "0 WPM";
+
+    accuracyText.innerText = "100%";
+
+    errorsText.innerText = "0 errores";
+
+    winnerDiv.innerText = "";
+});

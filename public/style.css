@@ -1,0 +1,205 @@
+body {
+    margin: 0;
+    background: #111111;
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+#game {
+    width: 900px;
+    max-width: 95%;
+    margin: auto;
+    margin-top: 60px;
+}
+
+#topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+#stats {
+    display: flex;
+    gap: 20px;
+    color: #999;
+}
+
+#countdown {
+    font-size: 30px;
+    color: #00d4ff;
+}
+
+#textContainer {
+    position: relative;
+    font-size: 38px;
+    line-height: 1.8;
+    color: #666;
+    user-select: none;
+    min-height: 220px;
+    font-weight: 500;
+}
+
+.correct {
+    color: white;
+}
+
+.incorrect {
+    color: #ff4d4d;
+}
+
+.current {
+    color: #00d4ff;
+}
+
+#caret {
+    position: absolute;
+    width: 3px;
+    height: 45px;
+    background: #00d4ff;
+    transition: 0.05s linear;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+#hiddenInput {
+    opacity: 0;
+    position: absolute;
+    z-index: -999;
+}
+
+#players {
+    margin-top: 50px;
+}
+
+.player {
+    margin-bottom: 20px;
+}
+
+.playerInfo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    color: #aaa;
+}
+
+.bar {
+    width: 100%;
+    height: 14px;
+    background: #222;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0077ff);
+    width: 0%;
+    transition: 0.1s linear;
+}
+
+#winner {
+    text-align: center;
+    font-size: 50px;
+    margin-top: 30px;
+    color: gold;
+}
+
+#popup {
+    position: fixed;
+    inset: 0;
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#popupContent {
+    text-align: center;
+}
+
+#nameInput {
+    width: 300px;
+    padding: 15px;
+    font-size: 22px;
+    background: #222;
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 10px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 22px;
+    border: none;
+    border-radius: 10px;
+    background: #00d4ff;
+    color: white;
+    cursor: pointer;
+}
+#masterPanel {
+    margin-bottom: 40px;
+}
+
+#customText {
+    width: 100%;
+    height: 120px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 20px;
+    resize: none;
+    margin-bottom: 20px;
+}
+
+#startBtn {
+    width: 100%;
+}
+
+#passwordInput {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    width: 90px;
+    opacity: 0.05;
+    background: transparent;
+    border: none;
+    color: #444;
+    font-size: 10px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#passwordInput:focus {
+    opacity: 1;
+    background: #222;
+    color: white;
+    width: 180px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.correct {
+    background: transparent;
+    color: white;
+}
+
+.incorrect {
+    background: rgba(255, 60, 60, 0.45);
+    border-radius: 4px;
+}
+
+.current {
+    color: #00d4ff;
+}
