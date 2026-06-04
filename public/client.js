@@ -165,7 +165,16 @@ hiddenInput.addEventListener("input", () => {
     totalTyped++;
 
     let html = "";
+    let correctProgress = 0;
 
+    for (let i = 0; i < value.length; i++) {
+    
+        if (value[i] === raceText[i]) {
+            correctProgress++;
+        } else {
+            break;
+        }
+    }
     let correctChars = 0;
 
     for (let i = 0; i < raceText.length; i++) {
@@ -226,8 +235,8 @@ hiddenInput.addEventListener("input", () => {
     errorsText.innerText = errors + " errores";
 
     const progress = raceText.length > 0
-        ? Math.min((value.length / raceText.length) * 100, 100)
-        : 0;
+    ? Math.min((correctProgress / raceText.length) * 100, 100)
+    : 0;
 
     socket.emit("typing", {
         progress,
