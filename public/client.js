@@ -115,6 +115,8 @@ socket.on("master", () => {
 
     hiddenInput.style.display = "none";
     document.getElementById("stats").style.display = "none";
+    document.getElementById("textContainer").style.display = "none";
+
 
 });
 
