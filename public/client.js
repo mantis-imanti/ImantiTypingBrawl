@@ -86,12 +86,34 @@ document.addEventListener("click", () => {
     }
 });
 
+nameInput.addEventListener("input", () => {
+
+    nameInput.value = nameInput.value
+        .replace(/[\u{1F600}-\u{1F6FF}]/gu, '') // emoticonos
+        .replace(/[\u{1F300}-\u{1F5FF}]/gu, '') // símbolos varios
+        .replace(/[\u{1F900}-\u{1F9FF}]/gu, '') // extensiones
+        .replace(/[\u{2600}-\u{26FF}]/gu, '')   // símbolos misceláneos
+        .replace(/[\u{2700}-\u{27BF}]/gu, '');  // dingbats
+});
+
 joinBtn.onclick = () => {
 
-    myName = nameInput.value;
+    let cleanName = nameInput.value
+        .replace(/[\u{1F600}-\u{1F6FF}]/gu, '')
+        .replace(/[\u{1F300}-\u{1F5FF}]/gu, '')
+        .replace(/[\u{1F900}-\u{1F9FF}]/gu, '')
+        .replace(/[\u{2600}-\u{26FF}]/gu, '')
+        .replace(/[\u{2700}-\u{27BF}]/gu, '')
+        .trim()
+        .slice(0, 16);
 
+    myName = cleanName;
+    if (!cleanName) {
+        alert("Escribe un nombre válido");
+        return;
+    }
     socket.emit("join", {
-        name: nameInput.value,
+        name: cleanName,
         password: passwordInput.value
     });
 
