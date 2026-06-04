@@ -247,35 +247,16 @@ button:hover {
 }
 
 .meFinal {
-    border: 1px solid rgba(255, 140, 66, 0.6);
-    background: rgba(255, 140, 66, 0.08);
-    box-shadow:
-        0 0 10px rgba(255, 140, 66, 0.15),
-        inset 0 0 10px rgba(255, 140, 66, 0.05);
-    position: relative;
-    overflow: hidden;
-}
-
-.meFinal::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-        circle at left,
-        rgba(255, 140, 66, 0.15),
-        transparent 60%
-    );
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-.meFinal .playerInfo {
-    color: #ffb37a;
+    border: 1px solid rgba(255, 140, 66, 0.8);
 }
 
 .meFinal .fill {
     background: linear-gradient(90deg, #ff8c42, #ff6b2c);
-    box-shadow: 0 0 8px rgba(255, 140, 66, 0.35);
+    box-shadow: 0 0 10px rgba(255, 140, 66, 0.35);
+}
+
+.meFinal .playerInfo span:first-child {
+    color: #ffb37a;
 }
 
 ::-webkit-scrollbar {
