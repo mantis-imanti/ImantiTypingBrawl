@@ -358,7 +358,7 @@ socket.on("updatePlayers", (players) => {
 
     div.innerHTML = `
         <div class="playerInfo">
-            <span>T${myName}</span>
+            <span>${myName}</span>
             <span>${Math.round(player.progress)}%</span>
         </div>
 
