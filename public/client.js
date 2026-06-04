@@ -114,6 +114,8 @@ socket.on("master", () => {
     masterPanel.style.display = "block";
 
     hiddenInput.style.display = "none";
+    document.getElementById("stats").style.display = "none";
+
 });
 
 customText.addEventListener("input", () => {
