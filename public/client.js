@@ -54,6 +54,13 @@ hiddenInput.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 });
 
+hiddenInput.addEventListener("keydown", (e) => {
+
+    if (!started) {
+        e.preventDefault();
+    }
+});
+
 joinBtn.onclick = () => {
 
     socket.emit("join", {
@@ -124,6 +131,14 @@ socket.on("countdown", (count) => {
 socket.on("startRace", () => {
 
     if (isMaster) return;
+
+    hiddenInput.value = "";
+
+    lastInput = "";
+
+    totalTyped = 0;
+
+    totalErrorsMade = 0;
 
     started = true;
 
