@@ -284,40 +284,63 @@ socket.on("updatePlayers", (players) => {
 
     playersDiv.innerHTML = "";
 
-    for (let id in players) {
+    const filteredPlayers = Object.entries(players)
+        .filter(([id, player]) => !player.isMaster);
 
-        const player = players[id];
+    if (isMaster) {
 
-        if (player.isMaster) continue;
+        const sorted = filteredPlayers
+            .sort((a, b) => b[1].progress - a[1].progress);
 
-        const div = document.createElement("div");
+        sorted.forEach(([id, player], index) => {
 
-        div.classList.add("player");
+            const div = document.createElement("div");
+            div.classList.add("player");
 
-        div.innerHTML = `
-            <div class="playerInfo">
-                <span>${player.name}</span>
-         
-                <div style="display:flex; gap:10px; align-items:center;">
+            div.innerHTML = `
+                <div class="playerInfo">
+                    <span>#${index + 1} ${player.name}</span>
 
-                    <span>${Math.round(player.progress)}%</span>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <span>${Math.round(player.progress)}%</span>
+                        <button class="kickBtn" onclick="kickPlayer('${id}')">❌</button>
+                    </div>
+                </div>
 
-                    ${
-                        isMaster
-                            ? `<button class="kickBtn" onclick="kickPlayer('${id}')">❌</button>`
-                            : ""
-                    }
+                <div class="bar">
+                    <div class="fill" style="width:${player.progress}%"></div>
+                </div>
+            `;
 
-                </div>    
-            </div>
+            playersDiv.appendChild(div);
+        });
 
-            <div class="bar">
-                <div class="fill" style="width:${player.progress}%"></div>
-            </div>
-        `;
-
-        playersDiv.appendChild(div);
+        return;
     }
+
+    const myId = socket.id;
+
+    const meEntry = filteredPlayers.find(([id]) => id === myId);
+
+    if (!meEntry) return;
+
+    const player = meEntry[1];
+
+    const div = document.createElement("div");
+    div.classList.add("player");
+
+    div.innerHTML = `
+        <div class="playerInfo">
+            <span>Tú</span>
+            <span>${Math.round(player.progress)}%</span>
+        </div>
+
+        <div class="bar">
+            <div class="fill" style="width:${player.progress}%"></div>
+        </div>
+    `;
+
+    playersDiv.appendChild(div);
 });
 
 socket.on("raceFinished", ({ winner, ranking }) => {
