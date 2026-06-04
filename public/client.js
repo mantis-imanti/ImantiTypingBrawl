@@ -38,6 +38,21 @@ let isMaster = false;
 let totalErrorsMade = 0;
 let lastInput = "";
 
+hiddenInput.addEventListener("paste", (e) => {
+    e.preventDefault();
+});
+
+hiddenInput.addEventListener("copy", (e) => {
+    e.preventDefault();
+});
+
+hiddenInput.addEventListener("cut", (e) => {
+    e.preventDefault();
+});
+
+hiddenInput.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+});
 
 joinBtn.onclick = () => {
 
