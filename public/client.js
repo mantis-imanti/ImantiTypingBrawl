@@ -30,6 +30,7 @@ const masterPanel = document.getElementById("masterPanel");
 const customText = document.getElementById("customText");
 
 let raceText = "";
+let myName = "";
 
 let totalTyped = 0;
 let started = false;
@@ -86,6 +87,8 @@ document.addEventListener("click", () => {
 });
 
 joinBtn.onclick = () => {
+
+    myName = nameInput.value;
 
     socket.emit("join", {
         name: nameInput.value,
@@ -355,7 +358,7 @@ socket.on("updatePlayers", (players) => {
 
     div.innerHTML = `
         <div class="playerInfo">
-            <span>Tú</span>
+            <span>T${myName}</span>
             <span>${Math.round(player.progress)}%</span>
         </div>
 
