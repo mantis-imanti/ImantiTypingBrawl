@@ -393,7 +393,9 @@ socket.on("raceFinished", ({ winner, ranking }) => {
     if (isMe) {
         div.classList.add("meFinal");
     }
-
+        
+    countdown.innerText = "🏁 RANKING FINAL";
+        
     div.innerHTML = `
         <div class="playerInfo">
             <span>
