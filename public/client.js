@@ -235,8 +235,11 @@ hiddenInput.addEventListener("input", () => {
         errors
     });
 
-    if (correctChars === raceText.length) {
-
+    if (
+    value.length === raceText.length &&
+    correctChars === raceText.length
+    ) {
+    
         started = false;
     }
 });
