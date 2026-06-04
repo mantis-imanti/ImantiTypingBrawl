@@ -380,20 +380,31 @@ socket.on("raceFinished", ({ winner, ranking }) => {
 
     ranking.forEach(player => {
 
-        const div = document.createElement("div");
+    const isMe = player.name === myName;
 
-        div.classList.add("player");
+    const div = document.createElement("div");
 
-        div.innerHTML = `
-            <div class="playerInfo">
-                <span>#${player.position} ${player.name} ${"⭐".repeat(player.stars)}</span>
-                <span>${player.wpm} PPM | ${player.errors} errores</span>
-            </div>
+    div.classList.add("player");
 
-            <div class="bar">
-                <div class="fill" style="width:${player.progress}%"></div>
-            </div>
-        `;
+    if (isMe) {
+        div.classList.add("meFinal");
+    }
+
+    div.innerHTML = `
+        <div class="playerInfo">
+            <span>
+                #${player.position} ${player.name} ${"⭐".repeat(player.stars)}
+            </span>
+
+            <span>
+                ${player.wpm} PPM | ${player.errors} errores
+            </span>
+        </div>
+
+        <div class="bar">
+            <div class="fill" style="width:${player.progress}%"></div>
+        </div>
+    `;
 
         playersDiv.appendChild(div);
     });
