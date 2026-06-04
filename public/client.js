@@ -105,7 +105,7 @@ joinBtn.onclick = () => {
         .replace(/[\u{2600}-\u{26FF}]/gu, '')
         .replace(/[\u{2700}-\u{27BF}]/gu, '')
         .trim()
-        .slice(0, 16);
+        .slice(0, 26);
 
     myName = cleanName;
     if (!cleanName) {
