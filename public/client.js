@@ -102,7 +102,7 @@ startBtn.onclick = () => {
 socket.on("text", (text) => {
 
     raceText = text;
-
+    caret.style.display = "block";
     renderText();
 
     hiddenInput.value = "";
@@ -256,8 +256,9 @@ hiddenInput.addEventListener("input", () => {
     value.length === raceText.length &&
     correctChars === raceText.length
     ) {
-    
         started = false;
+        caret.style.display = "none";
+        hiddenInput.blur();
     }
 });
 
@@ -357,7 +358,7 @@ socket.on("resetRace", () => {
     lastInput = "";
     
     started = false;
-
+    caret.style.display = "block";
     renderText();
 
     caret.style.left = "0px";
