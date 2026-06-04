@@ -152,6 +152,14 @@ hiddenInput.addEventListener("input", () => {
     if (!started) return;
 
     const value = hiddenInput.value;
+
+    if (value.length > raceText.length) {
+
+        hiddenInput.value = value.slice(0, raceText.length);
+
+        return;
+    }
+    
     if (value.length > lastInput.length) {
 
         const index = value.length - 1;
