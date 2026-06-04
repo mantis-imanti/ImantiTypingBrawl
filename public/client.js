@@ -61,6 +61,30 @@ hiddenInput.addEventListener("keydown", (e) => {
     }
 });
 
+document.addEventListener("visibilitychange", () => {
+
+    if (document.visibilityState === "visible") {
+
+        if (started && !isMaster) {
+            hiddenInput.focus();
+        }
+    }
+});
+
+window.addEventListener("focus", () => {
+
+    if (started && !isMaster) {
+        hiddenInput.focus();
+    }
+});
+
+document.addEventListener("click", () => {
+
+    if (started && !isMaster) {
+        hiddenInput.focus();
+    }
+});
+
 joinBtn.onclick = () => {
 
     socket.emit("join", {
