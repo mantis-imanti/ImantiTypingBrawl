@@ -29,6 +29,9 @@ const masterPanel = document.getElementById("masterPanel");
 
 const customText = document.getElementById("customText");
 
+const victorySound = new Audio("/victory.mp3");
+victorySound.volume = 0.5;
+
 let raceText = "";
 let myName = "";
 
@@ -412,6 +415,10 @@ socket.on("raceFinished", ({ winner, ranking }) => {
 
     div.classList.add("player");
 
+    if (isMaster){
+        victorySound.currentTime = 0;
+        victorySound.play();
+    }
     if (isMe) {
         div.classList.add("meFinal");
     }
