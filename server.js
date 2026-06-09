@@ -19,6 +19,12 @@ let raceStartTime = 0;
 let raceText = "";
 let gameState = "lobby";
 
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+
+nextRoundBtn.onclick = () => {
+    socket.emit("nextRound");
+};
+
 function resetPlayers() {
 
     for (let id in players) {
