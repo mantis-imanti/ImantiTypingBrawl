@@ -199,7 +199,7 @@ socket.on("startGame", () => {
             io.emit("updatePlayers", players);
         }
     });
-       socket.on("disconnect", () => {
+      socket.on("disconnect", () => {
     
         delete players[socket.id];
         delete waitingPlayers[socket.id];
