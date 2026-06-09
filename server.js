@@ -192,7 +192,7 @@ socket.on("typing", (data) => {
         io.emit("raceFinished", {
             winner,
             ranking
-            gameState = "results";
+            gameState = "lobby";
         });
     }
 });
