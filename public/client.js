@@ -401,8 +401,6 @@ socket.on("updatePlayers", (players) => {
 
 socket.on("raceFinished", ({ winner, ranking }) => {
 
-    console.log("RACE FINISHED OK");
-
     started = false;
 
     winnerDiv.innerText = "🏆 #1 - " + winner;
@@ -418,16 +416,13 @@ socket.on("raceFinished", ({ winner, ranking }) => {
         const div = document.createElement("div");
         div.classList.add("player");
 
-        if (isMe) {
-            div.classList.add("meFinal");
-        }
+        if (isMe) div.classList.add("meFinal");
 
         div.innerHTML = `
             <div class="playerInfo">
                 <span>
                     #${player.position} ${player.name} ${"⭐".repeat(player.stars || 0)}
                 </span>
-
                 <span>
                     ${player.wpm} PPM | ${player.errors} errores
                 </span>
@@ -441,23 +436,26 @@ socket.on("raceFinished", ({ winner, ranking }) => {
         playersDiv.appendChild(div);
     });
 
-    const btn = document.createElement("button");
-    btn.textContent = "SIGUIENTE RONDA";
-    btn.id = "nextRoundBtn";
+    if (isMaster) {
 
-    btn.style.marginTop = "20px";
-    btn.style.width = "100%";
+        const btn = document.createElement("button");
+        btn.textContent = "SIGUIENTE RONDA";
+        btn.id = "nextRoundBtn";
 
-    btn.onclick = () => {
+        btn.style.marginTop = "20px";
+        btn.style.width = "100%";
 
-        socket.emit("nextRound");
+        btn.onclick = () => {
 
-        countdown.innerText = "Esperando...";
+            socket.emit("nextRound");
 
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+            countdown.innerText = "Esperando...";
 
-    playersDiv.appendChild(btn);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        playersDiv.appendChild(btn);
+    }
 
     playersDiv.scrollIntoView({ behavior: "smooth" });
 
