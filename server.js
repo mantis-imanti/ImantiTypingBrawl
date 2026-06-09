@@ -132,7 +132,8 @@ socket.on("startGame", () => {
 });
     
 socket.on("typing", (data) => {
-
+    console.log("STATE:", gameState);
+    console.log("PROGRESS:", data.progress);
     if (gameState !== "racing") return;
     if (!players[socket.id]) return;
     if (players[socket.id].isMaster) return;
