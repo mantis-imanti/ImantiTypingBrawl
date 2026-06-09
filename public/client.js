@@ -476,3 +476,11 @@ function kickPlayer(playerId) {
         socket.emit("kickPlayer", playerId);
     }
 }
+socket.on("waitingNextRace", () => {
+
+    alert(
+        "La carrera ya comenzó. Espera a la siguiente ronda."
+    );
+
+    window.location.reload();
+});
