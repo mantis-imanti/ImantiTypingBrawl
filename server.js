@@ -9,6 +9,7 @@ const io = new Server(server);
 app.use(express.static("public"));
 
 const players = {};
+const waitingPlayers = {};
 
 let currentText = "";
 let raceStarted = false;
@@ -74,14 +75,7 @@ io.on("connection", (socket) => {
 
     socket.on("join", (data) => {
 
-    if (raceStarted || countdownRunning) {
-
-        socket.emit("waitingNextRace");
-
-        return;
-    }
-
-    players[socket.id] = {
+    const player = {
         name: data.name,
         stars: 0,
         progress: 0,
@@ -90,10 +84,20 @@ io.on("connection", (socket) => {
         isMaster: false
     };
 
+    if (raceStarted || countdownRunning) {
+
+        waitingPlayers[socket.id] = player;
+
+        socket.emit("waitingNextRace");
+
+        return;
+    }
+
+    players[socket.id] = player;
+
     if (data.password === "socket.id") {
 
         players[socket.id].isMaster = true;
-
         players[socket.id].name = "MAESTRO";
 
         socket.emit("master");
@@ -112,16 +116,17 @@ io.on("connection", (socket) => {
         io.emit("text", currentText);
     });
 
-    socket.on("startGame", () => {
-        if (!players[socket.id]) return;
-        if (!players[socket.id].isMaster) return;
+socket.on("startGame", () => {
 
-        if (!currentText.trim()) return;
+    if (!players[socket.id]) return;
+    if (!players[socket.id].isMaster) return;
 
-        resetPlayers();
+    Object.assign(players, waitingPlayers);
+    waitingPlayers = {};
 
-        startRace();
-    });
+    resetPlayers();
+    startRace();
+});
 
     socket.on("typing", (data) => {
         if (!players[socket.id]) return;
@@ -190,10 +195,11 @@ io.on("connection", (socket) => {
             io.emit("updatePlayers", players);
         }
     });
-    socket.on("disconnect", () => {
-
+       socket.on("disconnect", () => {
+    
         delete players[socket.id];
-
+        delete waitingPlayers[socket.id];
+    
         io.emit("updatePlayers", players);
     });
 });
