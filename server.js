@@ -192,7 +192,6 @@ socket.on("typing", (data) => {
         io.emit("raceFinished", {
             winner,
             ranking
-            gameState = "lobby";
         });
     }
 });
