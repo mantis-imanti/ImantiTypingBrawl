@@ -145,6 +145,8 @@ socket.on("master", () => {
 
 });
 
+
+
 customText.addEventListener("input", () => {
 
     socket.emit("setText", customText.value);
@@ -155,6 +157,20 @@ startBtn.onclick = () => {
     socket.emit("startGame");
 };
 
+socket.on("gameState", (state) => {
+
+    if (state === "lobby") {
+        countdown.innerText = "Esperando...";
+    }
+
+    if (state === "results") {
+        countdown.innerText = "🏁 RANKING FINAL";
+    }
+
+    if (state === "racing") {
+        countdown.innerText = "";
+    }
+});
 socket.on("text", (text) => {
 
     raceText = text;
@@ -400,7 +416,8 @@ socket.on("updatePlayers", (players) => {
 });
 
 socket.on("raceFinished", ({ winner, ranking }) => {
-
+    gameState = "results";
+    io.emit("gameState", gameState);
     started = false;
 
     winnerDiv.innerText = "🏆 #1 - " + winner;
