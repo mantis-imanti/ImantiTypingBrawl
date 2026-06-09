@@ -19,12 +19,6 @@ let raceStartTime = 0;
 let raceText = "";
 let gameState = "lobby";
 
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-
-nextRoundBtn.onclick = () => {
-    socket.emit("nextRound");
-};
-
 function resetPlayers() {
 
     for (let id in players) {
@@ -208,7 +202,7 @@ socket.on("typing", (data) => {
             io.emit("updatePlayers", players);
         }
     });
-    socket.on("nextRound", () => {
+   socket.on("nextRound", () => {
 
     if (!players[socket.id]) return;
     if (!players[socket.id].isMaster) return;
