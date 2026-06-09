@@ -106,7 +106,7 @@ nameInput.addEventListener("input", () => {
 });
 
 joinBtn.onclick = () => {
-
+    console.log("CLICK JOIN"); // 🔥 DEBUG
     let cleanName = nameInput.value
         .replace(/[\u{1F600}-\u{1F6FF}]/gu, '')
         .replace(/[\u{1F300}-\u{1F5FF}]/gu, '')
