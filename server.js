@@ -121,6 +121,10 @@ socket.on("startGame", () => {
     if (!players[socket.id]) return;
     if (!players[socket.id].isMaster) return;
 
+    raceStarted = false;
+    countdownRunning = false;
+    winner = null;
+
     Object.assign(players, waitingPlayers);
     waitingPlayers = {};
 
