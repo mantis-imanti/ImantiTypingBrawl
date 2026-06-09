@@ -405,60 +405,8 @@ socket.on("updatePlayers", (players) => {
     playersDiv.appendChild(div);
 });
 
-socket.on("raceFinished", ({ winner, ranking }) => {
-
-    started = false;
-
-    winnerDiv.innerText = "🏆 #1 - " + winner;
-
-    playersDiv.innerHTML = "";
-
-    countdown.innerText = "🏁 RANKING FINAL";
-
-    ranking.forEach(player => {
-
-        const isMe = player.name === myName;
-
-        const div = document.createElement("div");
-        div.classList.add("player");
-
-        if (isMe) div.classList.add("meFinal");
-
-        div.innerHTML = `
-            <div class="playerInfo">
-                <span>#${player.position} ${player.name} ${"⭐".repeat(player.stars)}</span>
-                <span>${player.wpm} PPM | ${player.errors} errores</span>
-            </div>
-
-            <div class="bar">
-                <div class="fill" style="width:${player.progress}%"></div>
-            </div>
-        `;
-
-        playersDiv.appendChild(div);
-    });
-
-    const btn = document.createElement("button");
-    btn.id = "nextRoundBtn";
-    btn.textContent = "SIGUIENTE RONDA";
-
-    btn.style.marginTop = "20px";
-    btn.style.width = "100%";
-
-    playersDiv.appendChild(btn);
-
-    playersDiv.scrollIntoView({ behavior: "smooth" });
-
-    btn.onclick = () => {
-
-        socket.emit("nextRound");
-
-        btn.remove(); // desaparece
-
-        countdown.innerText = "Esperando...";
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+socket.on("raceFinished", () => {
+    console.log("RACE FINISHED OK");
 });
 
 socket.on("resetRace", () => {
