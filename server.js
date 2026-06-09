@@ -232,6 +232,10 @@ socket.on("typing", (data) => {
     
         io.emit("updatePlayers", players);
     });
+
+    socket.on("countdownText", (text) => {
+    countdown.innerText = text;
+    });
 });
 
 
