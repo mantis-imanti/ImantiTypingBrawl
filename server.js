@@ -78,17 +78,19 @@ io.on("connection", (socket) => {
         wpm: 0,
         errors: 0,
         isMaster: false
+        joined: false
     };
 
     io.emit("updatePlayers", players);
 
     socket.on("join", (data) => {
-
+        players[socket.id].joined = true;
+        
         if (data.password === "socket.id") {
 
             players[socket.id].isMaster = true;
 
-            players[socket.id].name = "MAESTRO";
+            players[socket.id].name = "MAESTRA ALINA";
 
             socket.emit("master");
 
@@ -144,7 +146,7 @@ io.on("connection", (socket) => {
             raceStarted = false;
 
             const ranking = Object.entries(players)
-                .filter(([id, p]) => !p.isMaster)
+                .filter(([id, p]) => !p.isMaster && p.joined)
                 .map(([id, p]) => {
 
                     const minutes = Math.max((Date.now() - raceStartTime) / 1000 / 60, 0.01);
