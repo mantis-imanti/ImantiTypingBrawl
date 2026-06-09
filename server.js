@@ -71,38 +71,39 @@ function startRace() {
 
 io.on("connection", (socket) => {
 
+
+    socket.on("join", (data) => {
+
+    if (raceStarted || countdownRunning) {
+
+        socket.emit("waitingNextRace");
+
+        return;
+    }
+
     players[socket.id] = {
-        name: "Jugador",
+        name: data.name,
         stars: 0,
         progress: 0,
         wpm: 0,
         errors: 0,
         isMaster: false
-        joined: false
     };
 
+    if (data.password === "socket.id") {
+
+        players[socket.id].isMaster = true;
+
+        players[socket.id].name = "MAESTRO";
+
+        socket.emit("master");
+    }
+
     io.emit("updatePlayers", players);
-
-    socket.on("join", (data) => {
-        players[socket.id].joined = true;
-        
-        if (data.password === "socket.id") {
-
-            players[socket.id].isMaster = true;
-
-            players[socket.id].name = "MAESTRA ALINA";
-
-            socket.emit("master");
-
-        } else {
-
-            players[socket.id].name = data.name || "Jugador";
-        }
-
-        io.emit("updatePlayers", players);
-    });
+});
 
     socket.on("setText", (text) => {
+        if (!players[socket.id]) return;
         raceText = text;
         if (!players[socket.id].isMaster) return;
 
@@ -112,7 +113,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("startGame", () => {
-
+        if (!players[socket.id]) return;
         if (!players[socket.id].isMaster) return;
 
         if (!currentText.trim()) return;
@@ -123,7 +124,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("typing", (data) => {
-
+        if (!players[socket.id]) return;
         if (!raceStarted) return;
 
         if (winner) return;
@@ -177,7 +178,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("kickPlayer", (playerId) => {
-
+        if (!players[socket.id]) return;
         if (!players[socket.id]?.isMaster) return;
 
         if (players[playerId]) {
