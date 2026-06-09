@@ -42,6 +42,12 @@ let isMaster = false;
 let totalErrorsMade = 0;
 let lastInput = "";
 
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+
+nextRoundBtn.onclick = () => {
+    socket.emit("nextRound");
+};
+
 hiddenInput.addEventListener("paste", (e) => {
     e.preventDefault();
 });
