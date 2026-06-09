@@ -206,12 +206,9 @@ socket.on("typing", (data) => {
     });
    socket.on("nextRound", () => {
 
-    if (!players[socket.id]) return;
-    if (!players[socket.id].isMaster) return;
+    if (!players[socket.id]?.isMaster) return;
 
     gameState = "lobby";
-    io.emit("countdownText", "Esperando...");
-
     winner = null;
 
     for (let id in players) {
@@ -224,6 +221,7 @@ socket.on("typing", (data) => {
 
     io.emit("resetRace");
     io.emit("updatePlayers", players);
+    broadcastState(); 
 });
       socket.on("disconnect", () => {
 
@@ -233,10 +231,11 @@ socket.on("typing", (data) => {
         io.emit("updatePlayers", players);
     });
 
-    socket.on("countdownText", (text) => {
-    countdown.innerText = text;
-    });
 });
+
+function broadcastState() {
+    io.emit("gameState", gameState);
+}
 
 
 server.listen(3000, () => {
