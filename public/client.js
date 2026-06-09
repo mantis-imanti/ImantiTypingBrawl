@@ -318,11 +318,16 @@ hiddenInput.addEventListener("input", () => {
     ? Math.min((correctProgress / raceText.length) * 100, 100)
     : 0;
 
-    socket.emit("typing", {
-        progress,
-        wpm,
-        errors
-    });
+    const isFinished =
+    hiddenInput.value.length === raceText.length &&
+    hiddenInput.value === raceText;
+
+socket.emit("typing", {
+    progress,
+    wpm,
+    errors,
+    finished: isFinished
+});
 
     if (
     value.length === raceText.length &&
