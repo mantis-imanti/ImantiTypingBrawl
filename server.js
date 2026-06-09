@@ -219,10 +219,30 @@ socket.on("typing", (data) => {
     io.emit("updatePlayers", players);
     
 });
-      socket.on("disconnect", () => {
+     socket.on("disconnect", () => {
 
+        const wasMaster = players[socket.id]?.isMaster;
+    
         delete players[socket.id];
         delete waitingPlayers[socket.id];
+    
+        if (wasMaster) {
+    
+            io.emit("kicked");
+    
+            for (const id in players) {
+                delete players[id];
+            }
+    
+            for (const id in waitingPlayers) {
+                delete waitingPlayers[id];
+            }
+    
+            winner = null;
+            gameState = "lobby";
+    
+            return;
+        }
     
         io.emit("updatePlayers", players);
     });
