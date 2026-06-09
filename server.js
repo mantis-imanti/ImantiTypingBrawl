@@ -17,18 +17,20 @@ let winner = null;
 let countdownRunning = false;
 let raceStartTime = 0;
 let raceText = "";
+let gameState = "lobby";
 
 function resetPlayers() {
 
     for (let id in players) {
 
         if (!players[id].isMaster) {
-
             players[id].progress = 0;
             players[id].wpm = 0;
-            players[id].errors = 0; 
+            players[id].errors = 0;
         }
     }
+
+    gameState = "lobby";
 
     io.emit("updatePlayers", players);
     io.emit("resetRace");
@@ -37,13 +39,9 @@ function resetPlayers() {
 
 function startRace() {
 
-    if (countdownRunning) return;
+    if (gameState !== "countdown") return;
 
-    countdownRunning = true;
-
-    raceStarted = false;
-
-    winner = null;
+    gameState = "countdown";
 
     io.emit("text", currentText);
 
@@ -59,17 +57,15 @@ function startRace() {
 
             clearInterval(interval);
 
-            countdownRunning = false;
+            gameState = "racing";
 
-            raceStarted = true;
             raceStartTime = Date.now();
-            
+
             io.emit("startRace");
         }
 
     }, 1000);
 }
-
 io.on("connection", (socket) => {
 
 
@@ -84,24 +80,25 @@ io.on("connection", (socket) => {
         isMaster: false
     };
 
-    if (raceStarted || countdownRunning) {
+    if (data.password === "socket.id") {
 
-        waitingPlayers[socket.id] = player;
+        player.isMaster = true;
+        player.name = "MAESTRO";
+
+        players[socket.id] = player;
+        socket.emit("master");
+
+        io.emit("updatePlayers", players);
+        return;
+    }
+
+    if (gameState !== "lobby") {
 
         socket.emit("waitingNextRace");
-
         return;
     }
 
     players[socket.id] = player;
-
-    if (data.password === "socket.id") {
-
-        players[socket.id].isMaster = true;
-        players[socket.id].name = "MAESTRO";
-
-        socket.emit("master");
-    }
 
     io.emit("updatePlayers", players);
 });
@@ -121,9 +118,9 @@ socket.on("startGame", () => {
     if (!players[socket.id]) return;
     if (!players[socket.id].isMaster) return;
 
-    raceStarted = false;
-    countdownRunning = false;
-    winner = null;
+    if (!currentText.trim()) return;
+
+    gameState = "countdown";
 
     Object.assign(players, waitingPlayers);
     waitingPlayers = {};
@@ -133,6 +130,7 @@ socket.on("startGame", () => {
 });
 
     socket.on("typing", (data) => {
+        if (gameState !== "racing") return;
         if (!players[socket.id]) return;
         if (!raceStarted) return;
 
