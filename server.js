@@ -39,11 +39,9 @@ function resetPlayers() {
 
 function startRace() {
 
-    raceStarted = true;
-    countdownRunning = false;
-    winner = null;
-
     gameState = "racing";
+
+    winner = null;
 
     io.emit("text", currentText);
 
@@ -154,8 +152,6 @@ socket.on("typing", (data) => {
         player.stars += 1;
 
         gameState = "results";
-        raceStarted = false;
-        countdownRunning = false;
 
         const ranking = Object.entries(players)
             .filter(([id, p]) => !p.isMaster)
@@ -185,10 +181,7 @@ socket.on("typing", (data) => {
                 position: index + 1
             }));
 
-        io.emit("raceFinished", {
-            winner,
-            ranking
-        });
+        io.emit("raceFinished", { winner, ranking });
     }
 });
     socket.on("kickPlayer", (playerId) => {
@@ -221,7 +214,6 @@ socket.on("typing", (data) => {
 
     io.emit("resetRace");
     io.emit("updatePlayers", players);
-    broadcastState(); 
 });
       socket.on("disconnect", () => {
 
