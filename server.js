@@ -147,7 +147,7 @@ io.on("connection", (socket) => {
             raceStarted = false;
 
             const ranking = Object.entries(players)
-                .filter(([id, p]) => !p.isMaster && p.joined)
+                .filter(([id, p]) => !p.isMaster)
                 .map(([id, p]) => {
 
                     const minutes = Math.max((Date.now() - raceStartTime) / 1000 / 60, 0.01);
