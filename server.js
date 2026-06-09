@@ -228,7 +228,7 @@ socket.on("typing", (data) => {
     
         if (wasMaster) {
     
-            io.emit("kicked");
+            io.emit("masterDisconnected");
     
             for (const id in players) {
                 delete players[id];
@@ -246,6 +246,13 @@ socket.on("typing", (data) => {
     
         io.emit("updatePlayers", players);
     });
+
+    socket.on("masterDisconnected", () => {
+
+    alert("Se acabó, por favor cierra esta ventana.");
+
+    window.location.reload();
+});
 
 });
 
