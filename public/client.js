@@ -1,3 +1,4 @@
+alert("CLIENT JS CARGÓ");
 const socket = io();
 
 const textDiv = document.getElementById("text");
