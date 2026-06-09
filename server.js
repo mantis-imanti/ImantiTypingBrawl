@@ -132,27 +132,27 @@ socket.on("startGame", () => {
 });
     
 socket.on("typing", (data) => {
-    console.log("STATE:", gameState);
-    console.log("PROGRESS:", data.progress);
+
     if (gameState !== "racing") return;
     if (!players[socket.id]) return;
     if (players[socket.id].isMaster) return;
-    if (winner) return;
 
     const player = players[socket.id];
 
-    player.progress = data.progress;
-    player.wpm = data.wpm;
-    player.errors = data.errors;
+    player.progress = Number(data.progress || 0);
+    player.wpm = Number(data.wpm || 0);
+    player.errors = Number(data.errors || 0);
 
     io.emit("updatePlayers", players);
 
-    if (data.finished && !winner) {
+    if (player.progress >= 100 && !winner) {
 
         winner = player.name;
         player.stars += 1;
 
         gameState = "results";
+        raceStarted = false;
+        countdownRunning = false;
 
         const ranking = Object.entries(players)
             .filter(([id, p]) => !p.isMaster)
@@ -182,7 +182,10 @@ socket.on("typing", (data) => {
                 position: index + 1
             }));
 
-        io.emit("raceFinished", { winner, ranking });
+        io.emit("raceFinished", {
+            winner,
+            ranking
+        });
     }
 });
     socket.on("kickPlayer", (playerId) => {
