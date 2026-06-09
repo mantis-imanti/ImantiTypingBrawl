@@ -104,15 +104,14 @@ io.on("connection", (socket) => {
 
 });
 
-    socket.on("setText", (text) => {
-        if (!players[socket.id]) return;
-        raceText = text;
-        if (!players[socket.id].isMaster) return;
+   socket.on("setText", (text) => {
 
-        currentText = text;
+    if (!players[socket.id]) return;
+    if (!players[socket.id].isMaster) return;
 
-        io.emit("text", currentText);
-    });
+    currentText = text;
+    raceText = text;
+});
 
 socket.on("startGame", () => {
 
@@ -214,7 +213,7 @@ socket.on("typing", (data) => {
             players[id].errors = 0;
         }
     }
-
+    io.emit("text", "");
     io.emit("gameState", "lobby");   
     io.emit("resetRace");
     io.emit("updatePlayers", players);
