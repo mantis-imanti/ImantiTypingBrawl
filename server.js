@@ -41,7 +41,9 @@ function startRace() {
 
     if (gameState !== "countdown") return;
 
-    gameState = "countdown";
+    countdownRunning = true;
+    raceStarted = false;
+    winner = null;
 
     io.emit("text", currentText);
 
@@ -56,6 +58,9 @@ function startRace() {
         if (count < 0) {
 
             clearInterval(interval);
+
+            countdownRunning = false;
+            raceStarted = true;
 
             gameState = "racing";
 
@@ -94,6 +99,7 @@ io.on("connection", (socket) => {
 
     if (gameState !== "lobby") {
 
+        waitingPlayers[socket.id] = player;
         socket.emit("waitingNextRace");
         return;
     }
@@ -123,67 +129,70 @@ socket.on("startGame", () => {
     gameState = "countdown";
 
     Object.assign(players, waitingPlayers);
-    waitingPlayers = {};
+    for (let k in waitingPlayers) delete waitingPlayers[k];
 
     resetPlayers();
     startRace();
 });
 
-    socket.on("typing", (data) => {
-        if (gameState !== "racing") return;
-        if (!players[socket.id]) return;
-        if (!raceStarted) return;
+socket.on("typing", (data) => {
 
-        if (winner) return;
+    if (gameState !== "racing") return;
+    if (!players[socket.id]) return;
+    if (players[socket.id].isMaster) return;
+    if (winner) return;
 
-        if (players[socket.id].isMaster) return;
+    const player = players[socket.id];
 
-        players[socket.id].progress = data.progress;
-        players[socket.id].wpm = data.wpm;
-        players[socket.id].errors = data.errors;
+    player.progress = data.progress;
+    player.wpm = data.wpm;
+    player.errors = data.errors;
 
-        io.emit("updatePlayers", players);
+    io.emit("updatePlayers", players);
 
-        if (data.progress >= 100 && !winner) {
+    if (data.progress >= 100 && !winner) {
 
-            winner = players[socket.id].name;
+        winner = player.name;
+        player.stars += 1;
 
-            // ⭐ sumar estrella al ganador
-            players[socket.id].stars += 1;
+        gameState = "results";
+        raceStarted = false;
+        countdownRunning = false;
 
-            raceStarted = false;
+        const ranking = Object.entries(players)
+            .filter(([id, p]) => !p.isMaster)
+            .map(([id, p]) => {
 
-            const ranking = Object.entries(players)
-                .filter(([id, p]) => !p.isMaster)
-                .map(([id, p]) => {
+                const minutes = Math.max(
+                    (Date.now() - raceStartTime) / 1000 / 60,
+                    0.01
+                );
 
-                    const minutes = Math.max((Date.now() - raceStartTime) / 1000 / 60, 0.01);
+                const estimatedChars =
+                    (p.progress / 100) * (raceText?.length || 1);
 
-                    const estimatedChars = (p.progress / 100) * (raceText?.length || 1);
+                const realWpm = Math.round((estimatedChars / 5) / minutes);
 
-                    const realWpm = Math.round((estimatedChars / 5) / minutes);
+                return {
+                    name: p.name,
+                    stars: p.stars,
+                    wpm: realWpm,
+                    errors: p.errors,
+                    progress: p.progress
+                };
+            })
+            .sort((a, b) => b.progress - a.progress)
+            .map((p, index) => ({
+                ...p,
+                position: index + 1
+            }));
 
-                    return {
-                        name: p.name,
-                        stars: p.stars,
-                        wpm: realWpm,
-                        errors: p.errors,
-                        progress: p.progress
-                    };
-                })
-                .sort((a, b) => b.progress - a.progress)
-                .map((p, index) => ({
-                    ...p,
-                    position: index + 1
-                }));
-
-            io.emit("raceFinished", {
-                winner,
-                ranking
-            });
-        }
-    });
-
+        io.emit("raceFinished", {
+            winner,
+            ranking
+        });
+    }
+});
     socket.on("kickPlayer", (playerId) => {
         if (!players[socket.id]) return;
         if (!players[socket.id]?.isMaster) return;
