@@ -136,6 +136,7 @@ socket.on("typing", (data) => {
     if (gameState !== "racing") return;
     if (!players[socket.id]) return;
     if (players[socket.id].isMaster) return;
+    if (winner) return;
 
     const player = players[socket.id];
 
@@ -145,14 +146,12 @@ socket.on("typing", (data) => {
 
     io.emit("updatePlayers", players);
 
-    if (player.progress >= 100 && !winner) {
+    if (data.finished) {
 
         winner = player.name;
         player.stars += 1;
 
         gameState = "results";
-        raceStarted = false;
-        countdownRunning = false;
 
         const ranking = Object.entries(players)
             .filter(([id, p]) => !p.isMaster)
