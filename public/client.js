@@ -449,8 +449,6 @@ socket.on("raceFinished", ({ winner, ranking }) => {
 
             socket.emit("nextRound");
 
-            countdown.innerText = "Esperando...";
-
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
