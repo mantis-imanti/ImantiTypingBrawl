@@ -45,8 +45,6 @@ function resetPlayers() {
 
 function startRace() {
 
-    console.log("START RACE CALLED");
-
     raceStarted = true;
     countdownRunning = false;
     winner = null;
