@@ -207,7 +207,7 @@ socket.on("typing", (data) => {
         }
     });
       socket.on("disconnect", () => {
-    
+
         delete players[socket.id];
         delete waitingPlayers[socket.id];
     
