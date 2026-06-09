@@ -1,4 +1,3 @@
-alert("CLIENT JS CARGÓ");
 const socket = io();
 
 const textDiv = document.getElementById("text");
@@ -42,12 +41,6 @@ let startTime = 0;
 let isMaster = false;
 let totalErrorsMade = 0;
 let lastInput = "";
-
-const nextRoundBtn = document.getElementById("nextRoundBtn");
-
-nextRoundBtn.onclick = () => {
-    socket.emit("nextRound");
-};
 
 hiddenInput.addEventListener("paste", (e) => {
     e.preventDefault();
@@ -406,8 +399,69 @@ socket.on("updatePlayers", (players) => {
     playersDiv.appendChild(div);
 });
 
-socket.on("raceFinished", () => {
+socket.on("raceFinished", ({ winner, ranking }) => {
+
     console.log("RACE FINISHED OK");
+
+    started = false;
+
+    winnerDiv.innerText = "🏆 #1 - " + winner;
+
+    countdown.innerText = "🏁 RANKING FINAL";
+
+    playersDiv.innerHTML = "";
+
+    ranking.forEach(player => {
+
+        const isMe = player.name === myName;
+
+        const div = document.createElement("div");
+        div.classList.add("player");
+
+        if (isMe) {
+            div.classList.add("meFinal");
+        }
+
+        div.innerHTML = `
+            <div class="playerInfo">
+                <span>
+                    #${player.position} ${player.name} ${"⭐".repeat(player.stars || 0)}
+                </span>
+
+                <span>
+                    ${player.wpm} PPM | ${player.errors} errores
+                </span>
+            </div>
+
+            <div class="bar">
+                <div class="fill" style="width:${player.progress}%"></div>
+            </div>
+        `;
+
+        playersDiv.appendChild(div);
+    });
+
+    const btn = document.createElement("button");
+    btn.textContent = "SIGUIENTE RONDA";
+    btn.id = "nextRoundBtn";
+
+    btn.style.marginTop = "20px";
+    btn.style.width = "100%";
+
+    btn.onclick = () => {
+
+        socket.emit("nextRound");
+
+        countdown.innerText = "Esperando...";
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    playersDiv.appendChild(btn);
+
+    playersDiv.scrollIntoView({ behavior: "smooth" });
+
+    hiddenInput.blur();
 });
 
 socket.on("resetRace", () => {
