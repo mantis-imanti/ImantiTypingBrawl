@@ -188,6 +188,7 @@ socket.on("typing", (data) => {
         io.emit("raceFinished", {
             winner,
             ranking
+            gameState = "results";
         });
     }
 });
@@ -204,6 +205,25 @@ socket.on("typing", (data) => {
             io.emit("updatePlayers", players);
         }
     });
+    socket.on("nextRound", () => {
+
+    if (!players[socket.id]) return;
+    if (!players[socket.id].isMaster) return;
+
+    gameState = "lobby";
+    winner = null;
+
+    for (let id in players) {
+        if (!players[id].isMaster) {
+            players[id].progress = 0;
+            players[id].wpm = 0;
+            players[id].errors = 0;
+        }
+    }
+
+    io.emit("resetRace");
+    io.emit("updatePlayers", players);
+});
       socket.on("disconnect", () => {
 
         delete players[socket.id];
