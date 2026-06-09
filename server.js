@@ -215,8 +215,10 @@ socket.on("typing", (data) => {
         }
     }
 
+    io.emit("gameState", "lobby");   
     io.emit("resetRace");
     io.emit("updatePlayers", players);
+    
 });
       socket.on("disconnect", () => {
 
