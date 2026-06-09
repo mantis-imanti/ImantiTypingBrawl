@@ -228,7 +228,7 @@ socket.on("typing", (data) => {
     
         if (wasMaster) {
     
-            io.emit("masterDisconnected");
+            io.emit("kicked");
     
             for (const id in players) {
                 delete players[id];
@@ -238,21 +238,12 @@ socket.on("typing", (data) => {
                 delete waitingPlayers[id];
             }
     
-            winner = null;
-            gameState = "lobby";
-    
             return;
         }
     
         io.emit("updatePlayers", players);
     });
-
-    socket.on("masterDisconnected", () => {
-
-    alert("Se acabó, por favor cierra esta ventana.");
-
-    window.location.reload();
-});
+    
 
 });
 
