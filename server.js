@@ -38,7 +38,7 @@ function resetPlayers() {
 
 
 function startRace() {
-
+    console.log("START RACE CALLED");
     if (gameState !== "countdown") return;
 
     gameState = "countdown";
@@ -114,7 +114,8 @@ io.on("connection", (socket) => {
     });
 
 socket.on("startGame", () => {
-
+    console.log("START GAME CLICKED");
+    console.log("gameState:", gameState);
     if (!players[socket.id]) return;
     if (!players[socket.id].isMaster) return;
 
