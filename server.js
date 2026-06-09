@@ -210,6 +210,8 @@ socket.on("typing", (data) => {
     if (!players[socket.id].isMaster) return;
 
     gameState = "lobby";
+    io.emit("countdownText", "Esperando...");
+
     winner = null;
 
     for (let id in players) {
