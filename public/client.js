@@ -341,7 +341,7 @@ socket.on("updatePlayers", (players) => {
     playersDiv.innerHTML = "";
 
     const filteredPlayers = Object.entries(players)
-        .filter(([id, player]) => !player.isMaster);
+        .filter(([id, player]) => !player.isMaster && player.joined);
 
     if (isMaster) {
 
