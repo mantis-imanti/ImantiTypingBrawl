@@ -230,6 +230,9 @@ socket.on("typing", (data) => {
     });
 });
 
+setInterval(() => {
+    console.log("STATE:", gameState);
+}, 3000);
 
 server.listen(3000, () => {
 
