@@ -42,6 +42,14 @@ let isMaster = false;
 let totalErrorsMade = 0;
 let lastInput = "";
 
+const nextRoundBtn = document.getElementById("nextRoundBtn");
+
+nextRoundBtn.onclick = () => {
+    socket.emit("nextRound");
+    nextRoundBtn.style.display = "none"; 
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
 hiddenInput.addEventListener("paste", (e) => {
     e.preventDefault();
 });
@@ -457,22 +465,7 @@ socket.on("raceFinished", ({ winner, ranking }) => {
     });
 
     if (isMaster) {
-
-        const btn = document.createElement("button");
-        btn.textContent = "SIGUIENTE RONDA";
-        btn.id = "nextRoundBtn";
-
-        btn.style.marginTop = "20px";
-        btn.style.width = "100%";
-
-        btn.onclick = () => {
-
-            socket.emit("nextRound");
-
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        };
-
-        playersDiv.appendChild(btn);
+         nextRoundBtn.style.display = "block";
     }
 
     playersDiv.scrollIntoView({ behavior: "smooth" });
