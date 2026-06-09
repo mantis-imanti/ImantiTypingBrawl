@@ -421,8 +421,6 @@ socket.on("updatePlayers", (players) => {
 });
 
 socket.on("raceFinished", ({ winner, ranking }) => {
-    gameState = "results";
-    io.emit("gameState", gameState);
     started = false;
 
     winnerDiv.innerText = "🏆 #1 - " + winner;
