@@ -38,10 +38,14 @@ function resetPlayers() {
 
 
 function startRace() {
-    console.log("START RACE CALLED");
-    if (gameState !== "countdown") return;
 
-    gameState = "countdown";
+    console.log("START RACE CALLED");
+
+    raceStarted = true;
+    countdownRunning = false;
+    winner = null;
+
+    gameState = "racing";
 
     io.emit("text", currentText);
 
@@ -57,7 +61,6 @@ function startRace() {
 
             clearInterval(interval);
 
-            gameState = "racing";
             raceStartTime = Date.now();
 
             io.emit("startRace");
@@ -114,19 +117,18 @@ io.on("connection", (socket) => {
     });
 
 socket.on("startGame", () => {
-    console.log("START GAME CLICKED");
-    console.log("gameState:", gameState);
+
     if (!players[socket.id]) return;
     if (!players[socket.id].isMaster) return;
 
     if (!currentText.trim()) return;
 
-    gameState = "countdown";
-
     Object.assign(players, waitingPlayers);
     for (let id in waitingPlayers) delete waitingPlayers[id];
 
     resetPlayers();
+
+    gameState = "countdown"; 
 
     startRace();
 });
