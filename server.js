@@ -146,7 +146,7 @@ socket.on("typing", (data) => {
 
     io.emit("updatePlayers", players);
 
-    if (data.progress >= 100 && !winner) {
+    if (data.finished && !winner) {
 
         winner = player.name;
         player.stars += 1;
