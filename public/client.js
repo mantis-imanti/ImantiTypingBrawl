@@ -168,7 +168,7 @@ startBtn.onclick = () => {
 socket.on("gameState", (state) => {
 
     if (state === "lobby") {
-        countdown.innerText = "Esperando...";
+        countdown.innerText = "ESPERANDO...";
     }
 
     if (state === "results") {
