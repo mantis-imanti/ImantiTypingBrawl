@@ -41,9 +41,7 @@ function startRace() {
 
     if (gameState !== "countdown") return;
 
-    countdownRunning = true;
-    raceStarted = false;
-    winner = null;
+    gameState = "countdown";
 
     io.emit("text", currentText);
 
@@ -59,11 +57,7 @@ function startRace() {
 
             clearInterval(interval);
 
-            countdownRunning = false;
-            raceStarted = true;
-
             gameState = "racing";
-
             raceStartTime = Date.now();
 
             io.emit("startRace");
@@ -129,12 +123,13 @@ socket.on("startGame", () => {
     gameState = "countdown";
 
     Object.assign(players, waitingPlayers);
-    for (let k in waitingPlayers) delete waitingPlayers[k];
+    for (let id in waitingPlayers) delete waitingPlayers[id];
 
     resetPlayers();
+
     startRace();
 });
-
+    
 socket.on("typing", (data) => {
 
     if (gameState !== "racing") return;
