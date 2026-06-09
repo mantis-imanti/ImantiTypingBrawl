@@ -465,10 +465,15 @@ socket.on("raceFinished", ({ winner, ranking }) => {
     });
 
     if (isMaster) {
-         nextRoundBtn.style.display = "block";
+
+        nextRoundBtn.style.display = "block";
+    
+        countdown.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
     }
 
-    playersDiv.scrollIntoView({ behavior: "smooth" });
 
     hiddenInput.blur();
 });
