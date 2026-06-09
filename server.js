@@ -102,6 +102,8 @@ io.on("connection", (socket) => {
     players[socket.id] = player;
 
     io.emit("updatePlayers", players);
+    socket.emit("updatePlayers", players);
+
 });
 
     socket.on("setText", (text) => {
